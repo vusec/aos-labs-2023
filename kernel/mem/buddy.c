@@ -99,8 +99,7 @@ size_t count_total_free_pages(void)
  * no free buddy is found.
  *
  * The algorithm to merge pages is as follows:
- *  - Given the page of order k, locate the page with the lowest address
- *    and its buddy of order k.
+ *  - Given the page of order k locate its buddy of order k.
  *  - Check if both the page and the buddy are free and whether the order
  *    matches.
  *  - Remove the page and its buddy from the free list.

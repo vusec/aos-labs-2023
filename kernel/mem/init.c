@@ -92,7 +92,7 @@ void page_init(struct boot_info *boot_info)
 	/* Go through the array of struct page_info structs and:
 	 *  1) call list_init() to initialize the linked list node.
 	 *  2) set the reference count pp_ref to zero.
-	 *  3) mark the page as in use by setting pp_free to zero.
+	 *  3) mark the page as in use by setting pp_free to false.
 	 *  4) set the order pp_order to zero.
 	 */
 	for (i = 0; i < npages; ++i) {
@@ -104,8 +104,8 @@ void page_init(struct boot_info *boot_info)
 
 	/* Go through the entries in the memory map:
 	 *  1) Ignore the entry if the region is not free memory.
-	 *  2) Iterate through the pages in the region.
-	 *  3) If the physical address is above BOOT_MAP_LIM, ignore.
+	 *  2) Iterate through the region and separate it into pages.
+	 *  3) If the physical address is above or equal to BOOT_MAP_LIM, ignore.
 	 *  4) Hand the page to the buddy allocator by calling page_free() if
 	 *     the page is not reserved.
 	 *

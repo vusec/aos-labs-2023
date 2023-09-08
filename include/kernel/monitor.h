@@ -19,3 +19,4 @@ int mon_kerninfo(int argc, char **argv, struct int_frame *frame);
 int mon_backtrace(int argc, char **argv, struct int_frame *frame);
 int mon_buddyinfo(int argc, char **argv, struct int_frame *frame);
 int mon_pageinfo(int argc, char **argv, struct int_frame *frame);
+int mon_exit(int argc, char **argv, struct int_frame *frame);
