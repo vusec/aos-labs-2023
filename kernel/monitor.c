@@ -28,6 +28,7 @@ static struct command commands[] = {
 	{ "backtrace", "Display stack backtrace", mon_backtrace },
 	{ "buddyinfo", "Display debugging information for the buddy allocator", mon_buddyinfo },
 	{ "pageinfo", "Display page information for a given page index", mon_pageinfo },
+	{ "exit", "Exit the operating system", mon_exit}
 };
 
 #define NCOMMANDS (sizeof(commands)/sizeof(commands[0]))
@@ -136,6 +137,13 @@ int mon_pageinfo(int argc, char **argv, struct int_frame *frame)
 	return 0;
 }
 
+int mon_exit(int argc, char **argv, struct int_frame *frame) {
+  // This is a cheaty QEMU exit and not a proper shutdown. This could
+  // be a fun bonus assignment to set that up.
+  // Taken from: https://wiki.osdev.org/Shutdown
+  outw(0x604, 0x2000);
+  return 0;
+}
 /***** Kernel monitor command interpreter *****/
 
 #define WHITESPACE "\t\r\n "
