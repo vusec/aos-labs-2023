@@ -1,6 +1,16 @@
 OBJDIRS += lib
 
--include lib/lab4-files.mk
+LIB_SRCFILES := \
+	lib/console.c \
+	lib/libmain.c \
+	lib/exit.c \
+	lib/panic.c \
+	lib/printf.c \
+	lib/printfmt.c \
+	lib/readline.c \
+	lib/string.c \
+	lib/stubs.S \
+	lib/syscall.c
 
 LIB_OBJFILES := $(patsubst lib/%.c, $(OBJDIR)/lib/%.o, $(LIB_SRCFILES))
 LIB_OBJFILES := $(patsubst lib/%.S, $(OBJDIR)/lib/%.o, $(LIB_OBJFILES))

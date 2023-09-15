@@ -165,7 +165,8 @@ USER_CFLAGS := $(CFLAGS) -DOpenLSD_USER -gdwarf-2 -fPIC
 USER_LDFLAGS := -Tuser/user.ld -nostdlib -n
 
 ifneq ($(LEGACY),Yes)
-USER_CFLAGS += -mno-mmx -mno-sse -mno-avx -O0 -w
+#USER_CFLAGS += -mno-mmx -mno-sse -mno-avx -O0 -w
+USER_CFLAGS += -mno-mmx -mno-sse -mno-avx -w -DUSE_CLANG
 endif
 
 # Update .vars.X if variable X has changed since the last make run.
@@ -183,14 +184,17 @@ $(OBJDIR)/.vars.%: FORCE
 include boot/Makefile
 include kernel/Makefile
 
+include user/Makefile
+include lib/Makefile
+
 CPUS ?= 1
 
-QEMUOPTS = -drive format=raw,file=$(OBJDIR)/kernel/kernel.img -serial mon:stdio -gdb tcp::$(GDBPORT)
-QEMUOPTS += $(shell if $(QEMU) -nographic -help | grep -q '^-D '; then echo '-D qemu.log'; fi)
-QEMUOPTS += -no-reboot -D /dev/stdout
-IMAGES = $(OBJDIR)/kernel/kernel.img
-QEMUOPTS += -smp $(CPUS)
-QEMUOPTS += $(QEMUEXTRA)
+ifneq ($(LAB),7)
+	QEMUOPTS = -drive format=raw,file=$(OBJDIR)/kernel/kernel.img -serial mon:stdio -gdb tcp::$(GDBPORT)
+	IMAGES = $(OBJDIR)/kernel/kernel.img
+else
+	include qemu-opts-lab7.mk
+endif
 
 .gdbrc: .gdbrc.tmpl
 	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
@@ -337,16 +341,26 @@ prep-%:
 	$(V)$(MAKE) "INIT_CFLAGS=${INIT_CFLAGS} -DTEST=`case $* in *_*) echo $*;; *) echo user_$*;; esac`" $(IMAGES)
 
 run-%-nox-gdb: prep-% pre-qemu
-	$(QEMU) -nographic $(QEMUOPTS) -S
+	@sed "s/localhost:1234/localhost:$(GDBPORT)/" < .gdbrc.tmpl > .gdbrc
+	@echo "add-symbol-file obj/user/$*" >> .gdbrc
+	@echo "***"
+	@echo "*** Now run 'make gdb'." 1>&2
+	@echo "***"
+	@$(QEMU) -nographic $(QEMUOPTS) -S
 
 run-%-gdb: prep-% pre-qemu
-	$(QEMU) $(QEMUOPTS) -S
+	@sed "s/localhost:1234/localhost:$(GDBPORT)/" < .gdbrc.tmpl > .gdbrc
+	@echo "add-symbol-file obj/user/$*" >> .gdbrc
+	@echo "***"
+	@echo "*** Now run 'make gdb'." 1>&2
+	@echo "***"
+	@$(QEMU) $(QEMUOPTS) -S
 
 run-%-nox: prep-% pre-qemu
-	$(QEMU) -nographic $(QEMUOPTS)
+	@$(QEMU) -nographic $(QEMUOPTS)
 
 run-%: prep-% pre-qemu
-	$(QEMU) $(QEMUOPTS)
+	@$(QEMU) $(QEMUOPTS)
 
 # This magic automatically generates makefile dependencies
 # for header files included from C source files we compile,

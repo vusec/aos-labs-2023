@@ -13,9 +13,7 @@ SECTIONS {
 	entry = KERNEL_VMA + .;
 
 	.boot ALIGN(4K) : {
-		*/kernel/boot.o (.text)
-		*/kernel/boot.o (.data)
-		*/kernel/boot.o (.bss)
+		*/kernel/boot.o (.text .data .bss)
 		boot_end = .;
 	} :.boot
 
@@ -44,4 +42,3 @@ SECTIONS {
 
 	end = .;
 }
-
