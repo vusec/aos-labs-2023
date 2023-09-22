@@ -146,7 +146,7 @@ void int_handler(struct int_frame *frame)
 	 * "cli" in the interrupt path.
 	 */
 	assert(!(read_rflags() & FLAGS_IF));
-	cprintf("Incoming INT frame at %p\n", frame);
+	/* cprintf("Incoming INT frame at %p\n", frame); */
 	if ((frame->cs & 3) == 3) {
 		/* Interrupt from user mode. */
 		assert(cur_task);

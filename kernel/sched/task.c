@@ -223,8 +223,9 @@ void task_free(struct task *task)
 	unmap_user_pages(task->task_pml4);
 
 	/* Note the task's demise. */
-	cprintf("[PID %5u] Freed task with PID %u\n", cur_task ? cur_task->task_pid : 0,
-		task->task_pid);
+	cprintf("[PID %5u] Freed task with PID %u\n",
+	    cur_task ? cur_task->task_pid : task->task_ppid,
+ 	    task->task_pid);
 
 	/* Free the task. */
 	kfree(task);
