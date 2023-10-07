@@ -191,7 +191,11 @@ CPUS ?= 1
 
 ifneq ($(LAB),7)
 	QEMUOPTS = -drive format=raw,file=$(OBJDIR)/kernel/kernel.img -serial mon:stdio -gdb tcp::$(GDBPORT)
+	QEMUOPTS += $(shell if $(QEMU) -nographic -help | grep -q '^-D '; then echo '-D qemu.log'; fi)
+	QEMUOPTS += -no-reboot -D /dev/stdout
 	IMAGES = $(OBJDIR)/kernel/kernel.img
+	QEMUOPTS += -smp $(CPUS)
+	QEMUOPTS += $(QEMUEXTRA)
 else
 	include qemu-opts-lab7.mk
 endif

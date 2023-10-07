@@ -111,13 +111,11 @@ struct task *task_alloc(pid_t ppid)
 	 * task with that PID.
 	 */
 	for (pid = 1; pid < pid_max; ++pid) {
-		if (tasks[pid]) {
-			continue;
+		if (!tasks[pid]) {
+			tasks[pid] = task;
+			task->task_pid = pid;
+			break;
 		}
-
-		tasks[pid] = task;
-		task->task_pid = pid;
-		break;
 	}
 	/* We are out of PIDs. */
 	if (pid == pid_max) {
