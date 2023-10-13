@@ -8,6 +8,8 @@
 #include <kernel/mem.h>
 #include <kernel/sched.h>
 
+#include <kernel/acpi.h>
+
 pid_t pid_max = 1 << 16;
 struct task **tasks = (struct task **)PIDMAP_BASE;
 size_t nuser_tasks = 0;

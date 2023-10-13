@@ -8,6 +8,7 @@
 #include <kernel/pic.h>
 #include <kernel/sched.h>
 #include <kernel/tests.h>
+#include <kernel/dev/pci.h>
 
 #include <boot.h>
 #include <stdio.h>
@@ -46,6 +47,8 @@ void kmain(struct boot_info *boot_info)
 	madt_init(rsdp);
 	lapic_init();
 	hpet_init(rsdp);
+
+	pci_init(rsdp);
 
 	/* Set up the tasks. */
 	task_init();
